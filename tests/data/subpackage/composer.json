@@ -1,0 +1,9 @@
+{
+    "name": "test/subpackage",
+    "version": "0.0.1",
+    "autoload": {
+        "psr-4": {
+            "Test\\": "src/"
+        }
+    }
+}

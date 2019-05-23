@@ -1,0 +1,58 @@
+{
+    "name": "wannabe-pro/composer-release-plugin",
+    "type": "composer-plugin",
+    "version": "0.0.1",
+    "description": "Composer package release builder tool",
+    "keywords": [
+        "make",
+        "build",
+        "pack",
+        "release"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yaroslav Ivashkevich",
+            "email": "yaroslav@wannabe.pro"
+        }
+    ],
+    "homepage": "https://github.com/wannabepro/composer-release-plugin",
+    "support": {
+        "issues": "https://github.com/wannabepro/composer-release-plugin/issues"
+    },
+    "autoload": {
+        "psr-4": {
+            "WannaBePro\\Composer\\Plugin\\Release\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "WannaBePro\\Composer\\Plugin\\Release\\": "tests"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=5.6",
+        "composer-plugin-api": "^1.0"
+    },
+    "require-dev": {
+        "composer/composer": "1.0.*@dev",
+        "phpunit/phpunit": "4.8.36",
+        "php-mock/php-mock-phpunit": "~1",
+        "mikey179/vfsstream": "~1"
+    },
+    "extra": {
+        "class": "WannaBePro\\Composer\\Plugin\\Release\\Plugin"
+    },
+    "config": {
+        "optimize-autoloader": true
+    },
+    "scripts": {
+        "test": [
+            "composer validate --no-interaction",
+            "phpunit --log-junit=reports/unitreport.xml --coverage-text --coverage-html=reports/coverage --coverage-clover=reports/coverage.xml",
+            "phpcs -s --encoding=utf-8 --standard=PSR2 --report-checkstyle=reports/checkstyle-phpcs.xml --report-full --extensions=php src/* tests/phpunit/*"
+        ]
+    }
+}
