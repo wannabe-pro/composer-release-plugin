@@ -16,9 +16,9 @@
             "email": "yaroslav@wannabe.pro"
         }
     ],
-    "homepage": "https://github.com/wannabepro/composer-release-plugin",
+    "homepage": "https://github.com/wannabe-pro/composer-release-plugin",
     "support": {
-        "issues": "https://github.com/wannabepro/composer-release-plugin/issues"
+        "issues": "https://github.com/wannabe-pro/composer-release-plugin/issues"
     },
     "autoload": {
         "psr-4": {
@@ -38,9 +38,7 @@
     },
     "require-dev": {
         "composer/composer": "1.0.*@dev",
-        "phpunit/phpunit": "4.8.36",
-        "php-mock/php-mock-phpunit": "~1",
-        "mikey179/vfsstream": "~1"
+        "phpunit/phpunit": "4.8.36"
     },
     "extra": {
         "class": "WannaBePro\\Composer\\Plugin\\Release\\Plugin"
