@@ -10,7 +10,7 @@ Configuration value is named list of build targets names. For every name specifi
 * "map" - the rules set for file mapping in build target.
 
 Plugin duplicate composer install and update actions for shadow copy of package on virtual path used specific composer package of build if is set.
-After that action plugin map files in virtual patch and give it iterator for specified builder by class name extending `WannaBePro\Composer\Plugin\Release\Builder`.
+After that action plugin map files in virtual patch and give it iterator for specified builder by name.
 
 ```json
 {
@@ -20,14 +20,14 @@ After that action plugin map files in virtual patch and give it iterator for spe
     "extra": {
         "build-plugin": {
             "ProductionBuildTargetName": {
-                "builder": "SpecificBuilderClassName",
+                "builder": "SpecificBuilderName",
                 "composer": "SpecificComposerPackage",
                 "mapper": "SpecificFilesMapRules"
             }
         },
         "build-plugin-dev": {
             "DevelopmentBuildTargetName": {
-                "builder": "SpecificBuilderClassName",
+                "builder": "SpecificBuilderName",
                 "composer": "SpecificComposerJson",
                 "mapper": "SpecificFilesMapRules"
             }
@@ -47,3 +47,6 @@ By default template name equivalent source and all files will be excluded if not
     "/(.*)\\.php$/": "$1.inc"
 }
 ```
+
+This package preset builder named `copy` for simple copy files.
+All builders will extend `WannaBePro\Composer\Plugin\Release\Builder` and registered by `WannaBePro\Composer\Plugin\Release\Plugin::addBuilder($name, $builder)` in composer-plugin.

@@ -1,14 +1,15 @@
 <?php
 
-namespace WannaBePro\Composer\Plugin\Release;
+namespace WannaBePro\Composer\Plugin\Release\Copy;
 
 use Traversable;
 use Throwable;
+use WannaBePro\Composer\Plugin\Release\Builder as BaseBuilder;
 
 /**
  * Simple copy file builder.
  */
-class CopyFileBuilder extends Builder
+class Builder extends BaseBuilder
 {
     /**
      * @inheritDoc
@@ -20,7 +21,7 @@ class CopyFileBuilder extends Builder
         $this->getInstaller($update)->run();
         try {
             foreach ($files as $from => $to) {
-                $realTo = $this->name . DIRECTORY_SEPARATOR . $to;
+                $realTo = $this->target . DIRECTORY_SEPARATOR . $to;
                 mkdir(dirname($realTo), 0777, true);
                 copy($from, $realTo);
             }

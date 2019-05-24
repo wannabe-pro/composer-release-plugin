@@ -15,7 +15,7 @@ abstract class Builder
     /**
      * @var string The build name.
      */
-    protected $name;
+    protected $target;
 
     /**
      * @var Composer The build composer.
@@ -30,13 +30,13 @@ abstract class Builder
     /**
      * Builder constructor.
      *
-     * @param $name
-     * @param \Composer\Composer $composer
-     * @param \Composer\IO\IOInterface $io
+     * @param string $target The target.
+     * @param Composer $composer The build composer instance.
+     * @param IOInterface $io The IO interface.
      */
-    public function __construct($name, Composer $composer, IOInterface $io)
+    public function __construct($target, Composer $composer, IOInterface $io)
     {
-        $this->name = $name;
+        $this->target = $target;
         $this->composer = $composer;
         $this->io = $io;
     }
@@ -46,9 +46,9 @@ abstract class Builder
      *
      * @return string
      */
-    public function getName()
+    public function getTarget()
     {
-        return $this->name;
+        return $this->target;
     }
 
     /**

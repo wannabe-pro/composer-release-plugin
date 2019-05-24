@@ -13,6 +13,7 @@ use Composer\IO\IOInterface;
 use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
 use Composer\Util\Filesystem;
+use WannaBePro\Composer\Plugin\Release\Copy\Builder as CopyBuilder;
 use WannaBePro\Composer\Plugin\Release\Mapper\Mapper;
 use WannaBePro\Composer\Plugin\Release\Mapper\MapperIterator;
 use WannaBePro\Composer\Plugin\Release\Mapper\Rule;
@@ -31,7 +32,7 @@ use WannaBePro\Composer\Plugin\Release\Mapper\RuleIterator;
  *
  * Plugin duplicate composer install and update actions for shadow copy of package on virtual path used specific
  * composer package of build if is set. After that action plugin map files in virtual patch and give it iterator for
- * specified builder by class name extending "WannaBePro\Composer\Plugin\Release\Builder".
+ * specified builder by name.
  *
  * @code
  * {
@@ -41,14 +42,14 @@ use WannaBePro\Composer\Plugin\Release\Mapper\RuleIterator;
  *     "extra": {
  *         "build-plugin": {
  *             "ProductionBuildTargetName": {
- *                 "builder": "SpecificBuilderClassName",
+ *                 "builder": "SpecificBuilderName",
  *                 "composer": "SpecificComposerPackage",
  *                 "mapper": "SpecificFilesMapRules"
  *             }
  *         },
  *         "build-plugin-dev": {
  *             "DevelopmentBuildTargetName": {
- *                 "builder": "SpecificBuilderClassName",
+ *                 "builder": "SpecificBuilderName",
  *                 "composer": "SpecificComposerJson",
  *                 "mapper": "SpecificFilesMapRules"
  *             }
@@ -63,22 +64,19 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      * @var string[] The builders classes.
      */
     protected static $builders = [
-        CopyFileBuilder::class
+        'copy' => CopyBuilder::class,
     ];
 
     /**
      * Add builder.
      *
+     * @param string $name The builder name.
      * @param string $builder The builder class name.
      */
-    public static function addBuilder($builder)
+    public static function addBuilder($name, $builder)
     {
-        if (
-            is_string($builder)
-            && class_exists($builder, true)
-            && in_array(Builder::class, class_parents($builder))
-        ) {
-            array_push(self::$builders, $builder);
+        if (class_exists($builder, true) && in_array(Builder::class, class_parents($builder))) {
+            self::$builders[$name] = $builder;
         }
     }
 
@@ -183,11 +181,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         ));
         $mapper = array_key_exists('mapper', $release) ? $release['mapper'] : [];
         $builder = array_key_exists('builder', $release) ? $release['builder'] : null;
-        $isBuilder = is_string($builder) && in_array($builder, self::$builders);
+        $isBuilder = is_string($builder) && array_key_exists($builder, self::$builders);
 
         return $isBuilder
             ? new Mapper(
-                new $release['builder']($name, $composer, $this->io),
+                new self::$builders[$builder]($name, $composer, $this->io),
                 new RuleIterator(
                     new ArrayIterator(
                         array_map(

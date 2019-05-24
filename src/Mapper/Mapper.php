@@ -72,7 +72,7 @@ class Mapper implements IteratorAggregate
                     )
                 ),
                 $this->composer->getConfig()->get('vendor-dir'),
-                $this->builder->getName()
+                $this->builder->getTarget()
             ),
             $this->rules
         );

@@ -26,7 +26,7 @@ class MapperIterator extends FilterIterator
      */
     public function key()
     {
-        return $this->current()->getBuilder()->getName();
+        return $this->current()->getBuilder()->getTarget();
     }
 
     /**
