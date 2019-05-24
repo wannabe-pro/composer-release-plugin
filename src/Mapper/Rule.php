@@ -61,7 +61,11 @@ class Rule
         {
             if ($this->result) {
                 if (is_string($this->result)) {
-                    $file->setTarget(preg_replace($this->pattern, $this->result, $sourcePath));
+                    $file->setTarget(preg_replace(
+                        $this->pattern,
+                        str_replace('$$', $sourcePath, $this->result),
+                        $sourcePath
+                    ));
                 } else {
                     $file->setTarget($sourcePath);
                 }
