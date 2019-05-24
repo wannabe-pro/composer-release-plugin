@@ -22,12 +22,12 @@
     },
     "autoload": {
         "psr-4": {
-            "WannaBePro\\Composer\\Plugin\\Release\\": "src"
+            "WannaBePro\\Composer\\Plugin\\Release\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "WannaBePro\\Composer\\Plugin\\Release\\": "tests"
+            "WannaBePro\\Composer\\Plugin\\Release\\": "tests/"
         }
     },
     "minimum-stability": "dev",
