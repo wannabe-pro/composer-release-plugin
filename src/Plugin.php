@@ -101,12 +101,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function onCmd(Event $event)
     {
-        $autoload = $this->composer->getConfig()->get('vendor-dir') . DIRECTORY_SEPARATOR . 'autoload.php';
-        if (is_file($autoload)) {
-            include_once $autoload;
-        }
-
-        $mappers = $this->parseConfig();
+        $extra = $this->composer->getPackage()->getExtra();
+        $key = $event->isDevMode() && array_key_exists('build-plugin-dev', $extra)
+            ? 'build-plugin-dev'
+            : 'build-plugin';
+        $mappers = $this->parseConfig(array_key_exists($key, $extra) && is_array($extra[$key]) ? $extra[$key] : []);
         foreach ($mappers as $mapper) {
             $builder = $mapper->getBuilder();
             $builder->build($mapper, $event->getName() === ScriptEvents::POST_UPDATE_CMD);
@@ -116,16 +115,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * Parse releases.
      *
+     * @param array $config The config.
+     *
      * @return MapperIterator
      */
-    protected function parseConfig()
+    protected function parseConfig(array $config)
     {
-        $extra = $this->composer->getPackage()->getExtra();
-        $key = $this->composer->getPackage()->isDev() && array_key_exists('build-plugin-dev', $extra)
-            ? 'build-plugin-dev'
-            : 'build-plugin';
-        $config = array_key_exists($key, $extra) && is_array($extra[$key]) ? $extra[$key] : [];
-
         return new MapperIterator(
             new ArrayIterator(
                 array_map(
