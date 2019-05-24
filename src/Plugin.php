@@ -59,6 +59,26 @@ use WannaBePro\Composer\Plugin\Release\Mapper\RuleIterator;
  */
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
+    protected static $builders = [
+        CopyFileBuilder::class
+    ];
+
+    /**
+     * Add builder.
+     *
+     * @param string $builder The builder class name.
+     */
+    public static function addBuilder($builder)
+    {
+        if (
+            is_string($builder)
+            && class_exists($builder, true)
+            && in_array(Builder::class, class_parents($builder))
+        ) {
+            array_push(self::$builders, $builder);
+        }
+    }
+
     /**
      * The callback priority.
      */
@@ -160,9 +180,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         ));
         $mapper = array_key_exists('mapper', $release) ? $release['mapper'] : [];
         $builder = array_key_exists('builder', $release) ? $release['builder'] : null;
-        $isBuilder = is_string($builder)
-            && class_exists($builder, true)
-            && in_array(Builder::class, class_parents($builder));
+        $isBuilder = is_string($builder) && in_array($builder, self::$builders);
 
         return $isBuilder
             ? new Mapper(
