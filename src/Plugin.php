@@ -59,6 +59,9 @@ use WannaBePro\Composer\Plugin\Release\Mapper\RuleIterator;
  */
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
+    /**
+     * @var string[] The builders classes.
+     */
     protected static $builders = [
         CopyFileBuilder::class
     ];
