@@ -165,16 +165,14 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     protected function parseRelease($name, array $release)
     {
-        $config = array_key_exists('composer', $release)
-            ? $release['composer']
-            : Factory::getComposerFile();
+        $config = array_key_exists('composer', $release) ? $release['composer'] : Factory::getComposerFile();
         $relativePath = $this->composer->getConfig()->get('vendor-dir') . DIRECTORY_SEPARATOR . $name;
         (new Filesystem())->ensureDirectoryExists($relativePath);
         $path = realpath($relativePath);
         $composer = (new Factory())->createComposer($this->io, $config, true, $path);
         $composer->setLocker(new Locker(
             $this->io,
-            new JsonFile($path . DIRECTORY_SEPARATOR . $name . '.lock'),
+            new JsonFile($path . DIRECTORY_SEPARATOR . 'composer.lock'),
             $composer->getRepositoryManager(),
             $composer->getInstallationManager(),
             JsonFile::encode(is_string($config) && is_file($config) ? (new JsonFile($config))->read() : $config)
