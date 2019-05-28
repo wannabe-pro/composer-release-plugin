@@ -170,7 +170,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         (new Filesystem())->ensureDirectoryExists($relativePath);
         $path = realpath($relativePath);
         $composer = (new Factory())->createComposer($this->io, $config, true, $path);
-        $composer->setAutoloadGenerator(new AutoloadGenerator($composer->getEventDispatcher(), $this->io));
+        $composer->setAutoloadGenerator(new AutoloadGenerator($path, $composer->getEventDispatcher(), $this->io));
         $composer->setLocker(new Locker(
             $this->io,
             new JsonFile($path . DIRECTORY_SEPARATOR . 'composer.lock'),
