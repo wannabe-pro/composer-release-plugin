@@ -134,7 +134,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
-     * Parse releases.
+     * Parse plugin config.
      *
      * @param array $config The config.
      *
@@ -165,7 +165,33 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     protected function parseRelease($name, array $release)
     {
+        $mapper = array_key_exists('mapper', $release) ? (array) $release['mapper'] : [];
+        $builder = array_key_exists('builder', $release) ? (string) $release['builder'] : null;
         $config = array_key_exists('composer', $release) ? $release['composer'] : Factory::getComposerFile();
+
+        return is_string($builder) && array_key_exists($builder, self::$builders)
+            ? new Mapper(
+                new self::$builders[$builder](
+                    $name,
+                    $this->parseComposer($name, $config),
+                    $this->io
+                ),
+                $this->parseRules($mapper),
+                $this->composer
+            )
+            : null;
+    }
+
+    /**
+     * Parse composer.
+     *
+     * @param string $name The release name.
+     * @param string|array $config The composer config.
+     *
+     * @return Composer
+     */
+    protected function parseComposer($name, $config)
+    {
         $relativePath = $this->composer->getConfig()->get('vendor-dir') . DIRECTORY_SEPARATOR . $name;
         (new Filesystem())->ensureDirectoryExists($relativePath);
         $path = realpath($relativePath);
@@ -178,26 +204,29 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $composer->getInstallationManager(),
             JsonFile::encode(is_string($config) && is_file($config) ? (new JsonFile($config))->read() : $config)
         ));
-        $mapper = array_key_exists('mapper', $release) ? $release['mapper'] : [];
-        $builder = array_key_exists('builder', $release) ? $release['builder'] : null;
-        $isBuilder = is_string($builder) && array_key_exists($builder, self::$builders);
 
-        return $isBuilder
-            ? new Mapper(
-                new self::$builders[$builder]($name, $composer, $this->io),
-                new RuleIterator(
-                    new ArrayIterator(
-                        array_map(
-                            function ($pattern, $result) {
-                                return new Rule($pattern, $result);
-                            },
-                            array_keys($mapper),
-                            array_values($mapper)
-                        )
-                    )
-                ),
-                $this->composer
+        return $composer;
+    }
+
+    /**
+     * Parse mapper rules.
+     *
+     * @param array $mapper The mapper rules.
+     *
+     * @return RuleIterator
+     */
+    protected function parseRules(array $mapper)
+    {
+        return new RuleIterator(
+            new ArrayIterator(
+                array_map(
+                    function ($pattern, $result) {
+                        return new Rule($pattern, $result);
+                    },
+                    array_keys($mapper),
+                    array_values($mapper)
+                )
             )
-            : null;
+        );
     }
 }
