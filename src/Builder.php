@@ -82,6 +82,7 @@ abstract class Builder
     {
         $install = Installer::create($this->io, $this->composer);
         $install->setUpdate($update);
+
         return $install;
     }
 }

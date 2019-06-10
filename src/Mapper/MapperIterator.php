@@ -2,12 +2,10 @@
 
 namespace WannaBePro\Composer\Plugin\Release\Mapper;
 
-use FilterIterator;
-
 /**
  * The release mapper iterator.
  */
-class MapperIterator extends FilterIterator
+class MapperIterator extends BaseIterator
 {
     /**
      * @inheritDoc

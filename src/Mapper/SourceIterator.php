@@ -33,10 +33,10 @@ class SourceIterator extends FileIterator
      */
     public function __construct(Iterator $iterator, $vendor, $name)
     {
-        parent::__construct($iterator);
         $this->cwd = getcwd() . DIRECTORY_SEPARATOR;
         $this->vendor = realpath($vendor) . DIRECTORY_SEPARATOR;
         $this->package = realpath($vendor . DIRECTORY_SEPARATOR . $name) . DIRECTORY_SEPARATOR;
+        parent::__construct($iterator);
     }
 
     /**

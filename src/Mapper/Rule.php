@@ -3,6 +3,8 @@
 namespace WannaBePro\Composer\Plugin\Release\Mapper;
 
 /**
+ * The release mapper rule.
+ *
  * Mapper rule check source file relative path and apply template name for it. If template name not set or false then
  * its exclude file from release. By default template name equivalent source and all files will be excluded if not
  * otherwise.
@@ -52,21 +54,26 @@ class Rule
     /**
      * Apply rule ro file.
      *
-     * @param File $file The file.
+     * @param TargetIterator $iterator The target iterator.
      */
-    public function apply(File $file)
+    public function apply(TargetIterator $iterator)
     {
-        $sourcePath = $file->getSource();
-        if (preg_match($this->pattern, $sourcePath) === 1)
-        {
-            if ($this->result) {
-                if (is_string($this->result)) {
-                    $file->setTarget(preg_replace($this->pattern, $this->result, $sourcePath));
+        if (is_numeric($this->pattern) && is_file($this->result)) {
+            /** @noinspection PhpIncludeInspection */
+            require $this->result;
+        } else {
+            $file = $iterator->current();
+            $sourcePath = $file->getSource();
+            if (preg_match($this->pattern, $sourcePath) === 1) {
+                if ($this->result) {
+                    if (is_string($this->result)) {
+                        $file->setTarget(preg_replace($this->pattern, $this->result, $sourcePath));
+                    } else {
+                        $file->setTarget($sourcePath);
+                    }
                 } else {
-                    $file->setTarget($sourcePath);
+                    $file->setTarget(null);
                 }
-            } else {
-                $file->setTarget(null);
             }
         }
     }

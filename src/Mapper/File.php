@@ -3,7 +3,7 @@
 namespace WannaBePro\Composer\Plugin\Release\Mapper;
 
 /**
- * The file for release.
+ * The release file.
  */
 class File
 {

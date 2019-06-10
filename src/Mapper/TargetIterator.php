@@ -2,16 +2,25 @@
 
 namespace WannaBePro\Composer\Plugin\Release\Mapper;
 
-use Iterator;
-
+/**
+ * The target iterator.
+ */
 class TargetIterator extends FileIterator
 {
-    protected $rules;
+    /**
+     * @var Mapper The mapper.
+     */
+    protected $mapper;
 
-    public function __construct(Iterator $iterator, RuleIterator $rules)
+    public function __construct(Mapper $mapper, SourceIterator $iterator)
     {
+        $this->mapper = $mapper;
         parent::__construct($iterator);
-        $this->rules = $rules;
+    }
+
+    public function getMapper()
+    {
+        return $this->mapper;
     }
 
     public function accept()
@@ -21,8 +30,8 @@ class TargetIterator extends FileIterator
 
     protected function apply()
     {
-        foreach ($this->rules as $rule) {
-            $rule->apply($this->current());
+        foreach ($this->mapper->getRules() as $rule) {
+            $rule->apply($this);
         }
 
         return strlen($this->current()) > 0;
