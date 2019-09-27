@@ -50,3 +50,9 @@ By default template name equivalent source and all files will be excluded if not
 
 This package preset builder named `copy` for simple copy files.
 All builders will extend `WannaBePro\Composer\Plugin\Release\Builder` and registered by `WannaBePro\Composer\Plugin\Release\Plugin::addBuilder($name, $builder)` in composer-plugin.
+
+Mapper allow external rules file to manipulate of targets.
+Set mapper key as numeric value and napper value as source file name.
+This rule file accept `TargetIterator` as  `$iterator` var.
+You may append iterator of new targets for builder as `$iterator->getInnerIterator()->append()`.
+Use `FiltredFile` as items for disable another filtration rules on this files.
