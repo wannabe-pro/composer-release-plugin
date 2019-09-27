@@ -4,7 +4,7 @@ namespace WannaBePro\Composer\Plugin\Release\Mapper;
 
 use FilterIterator;
 use Iterator;
-use MultipleIterator;
+use AppendIterator;
 
 /**
  * The base iterator.
@@ -12,7 +12,7 @@ use MultipleIterator;
 abstract class BaseIterator extends FilterIterator
 {
     /**
-     * @var MultipleIterator The inner iterator.
+     * @var AppendIterator The inner iterator.
      */
     protected $innerIterator;
 
@@ -23,15 +23,15 @@ abstract class BaseIterator extends FilterIterator
      */
     public function __construct(Iterator $iterator)
     {
-        $this->innerIterator = new MultipleIterator();
-        $this->innerIterator->attachIterator($iterator);
+        $this->innerIterator = new AppendIterator();
+        $this->innerIterator->append($iterator);
         parent::__construct($this->innerIterator);
     }
 
     /**
      * @inheritDoc
      *
-     * @return MultipleIterator
+     * @return AppendIterator
      */
     public function getInnerIterator()
     {
