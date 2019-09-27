@@ -60,7 +60,7 @@ class Rule
     {
         if (is_numeric($this->pattern) && is_file($this->result)) {
             /** @noinspection PhpIncludeInspection */
-            require $this->result;
+            require_once $this->result;
         } else {
             $file = $iterator->current();
             $sourcePath = $file->getSource();

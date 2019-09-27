@@ -129,7 +129,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $mappers = $this->parseConfig(array_key_exists($key, $extra) && is_array($extra[$key]) ? $extra[$key] : []);
         foreach ($mappers as $mapper) {
             $builder = $mapper->getBuilder();
-            $builder->build($mapper, $event->getName() === ScriptEvents::POST_UPDATE_CMD);
+            $builder->build($mapper->getIterator(), $event->getName() === ScriptEvents::POST_UPDATE_CMD);
         }
     }
 
