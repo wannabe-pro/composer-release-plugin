@@ -1,7 +1,7 @@
 {
     "name": "wannabe-pro/composer-release-plugin",
     "type": "composer-plugin",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Composer package release builder tool",
     "keywords": [
         "make",
