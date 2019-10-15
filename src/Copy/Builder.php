@@ -5,28 +5,37 @@ namespace WannaBePro\Composer\Plugin\Release\Copy;
 use Traversable;
 use Throwable;
 use WannaBePro\Composer\Plugin\Release\Builder as BaseBuilder;
+use WannaBePro\Composer\Plugin\Release\Mapper\File;
 
 /**
  * Simple copy file builder.
  */
 class Builder extends BaseBuilder
 {
-    /**
-     * @inheritDoc
-     *
-     * @throws \Exception
-     */
-    public function build(Traversable $files, $update = false)
+    protected function getFrom($path, array $config)
     {
-        $this->getInstaller($update)->run();
-        try {
-            foreach ($files as $from => $to) {
-                $realTo = $this->target . DIRECTORY_SEPARATOR . $to;
-                mkdir(dirname($realTo), 0777, true);
-                copy($from, $realTo);
+        $stream = fopen($path, 'w', null, $this->getContext($config));
+
+        if (array_key_exists('filters', $config)) {
+            foreach ($config['filters'] as $filter) {
+                stream_filter_append($stream, $filter);
             }
-        } catch (Throwable $exception) {
-            $this->io->writeError($exception->getMessage());
         }
+
+        return $stream;
+    }
+
+    protected function getTo($path, array $config)
+    {
+        return fopen($path, 'w', null, $this->getContext($config));
+    }
+
+    protected function getContext(array $config)
+    {
+        if (array_key_exists('context', $config)) {
+            return stream_context_create($config['context']);
+        }
+
+        return null;
     }
 }

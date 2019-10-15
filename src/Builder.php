@@ -6,6 +6,8 @@ use Composer\Composer;
 use Composer\Installer;
 use Composer\IO\IOInterface;
 use Traversable;
+use WannaBePro\Composer\Plugin\Release\Mapper\File;
+use WannaBePro\Composer\Plugin\Release\Mapper\FileIterator;
 
 /**
  * The release builder.
@@ -54,22 +56,27 @@ abstract class Builder
     /**
      * Build release.
      *
-     * @param Traversable $files The release files, where key is source path and value is target path.
+     * @param FileIterator $files The release files, where key is source path and value is target path.
      * @param bool $update The upgrade flag.
      *
      * @return void
-     *
-     * @code
-     * public function build(Traversable $files, $update = false)
-     * {
-     *     $this->getInstaller($update)->run(); // install composer components
-     *     foreach($files as $source => $target) {
-     *         $this->io->write("Release file $source to $target");
-     *     }
-     * }
-     * @endcode
      */
-    public abstract function build(Traversable $files, $update = false);
+    public function build(FileIterator $files, $update = false)
+    {
+        $this->getInstaller($update)->run();
+        try {
+            foreach ($files as $file) {
+                $config = $file->getConfig();
+                $from = $this->getFrom($file->getFile(), $config);
+                $to = $this->getTo($this->target . DIRECTORY_SEPARATOR . $file, $config);
+                stream_copy_to_stream($from, $to);
+                fclose($from);
+                fclose($to);
+            }
+        } catch (Throwable $exception) {
+            $this->io->writeError($exception->getMessage());
+        }
+    }
 
     /**
      * Get installer for package.
@@ -85,4 +92,24 @@ abstract class Builder
 
         return $install;
     }
+
+    /**
+     * Get source stream.
+     *
+     * @param string $path The source file path.
+     * @param array $config Stream config.
+     *
+     * @return resource
+     */
+    abstract protected function getFrom($path, array $config);
+
+    /**
+     * Get target stream.
+     *
+     * @param string $path The target file path.
+     * @param array $config Stream config.
+     *
+     * @return resource
+     */
+    abstract protected function getTo($path, array $config);
 }

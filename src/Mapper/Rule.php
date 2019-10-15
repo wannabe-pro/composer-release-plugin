@@ -30,15 +30,22 @@ class Rule
     protected $result;
 
     /**
+     * @var array The stream config.
+     */
+    protected $config;
+
+    /**
      * Rule constructor.
      *
      * @param string $pattern The regexp pattern.
      * @param string $result The regexp template.
+     * @param array $config The stream config.
      */
-    public function __construct($pattern, $result)
+    public function __construct($pattern, $result, array $config = [])
     {
         $this->pattern = $pattern;
         $this->result = $result;
+        $this->config = $config;
     }
 
     /**
@@ -66,6 +73,7 @@ class Rule
             $sourcePath = $file->getSource();
             if (preg_match($this->pattern, $sourcePath) === 1) {
                 if ($this->result) {
+                    $file->setConfig($this->config);
                     if (is_string($this->result)) {
                         $file->setTarget(preg_replace($this->pattern, $this->result, $sourcePath));
                     } else {

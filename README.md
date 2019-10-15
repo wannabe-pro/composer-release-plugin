@@ -22,14 +22,16 @@ After that action plugin map files in virtual patch and give it iterator for spe
             "ProductionBuildTargetName": {
                 "builder": "SpecificBuilderName",
                 "composer": "SpecificComposerPackage",
-                "mapper": "SpecificFilesMapRules"
+                "mapper": "SpecificFilesMapRules",
+                "converter": "SpecificConverterName"
             }
         },
         "build-plugin-dev": {
             "DevelopmentBuildTargetName": {
                 "builder": "SpecificBuilderName",
                 "composer": "SpecificComposerJson",
-                "mapper": "SpecificFilesMapRules"
+                "mapper": "SpecificFilesMapRules",
+                "converter": "SpecificFilesConverterRules"
             }
         }
     }
@@ -42,9 +44,9 @@ By default template name equivalent source and all files will be excluded if not
 
 ```json
 {
-    "/.*/": false,
     "/^README.md/": true,
-    "/(.*)\\.php$/": "$1.inc"
+    "/(.*)\\.php$/": "$1.inc",
+    "/(^|\\/)\\./": false
 }
 ```
 
@@ -56,3 +58,14 @@ Set mapper key as numeric value and napper value as source file name.
 This rule file accept `TargetIterator` as  `$iterator` var.
 You may append iterator of new targets for builder as `$iterator->getInnerIterator()->append()`.
 Use `FiltredFile` as items for disable another filtration rules on this files.
+
+By default `converter` read file as-is. You may set rules like for mapper, but in value set converter config:
+
+```json
+{
+    "/\\.php$/": [
+      "convert.iconv.utf-8.cp1251"
+    ],
+    "/\\.gitkeep$/": "null"
+}
+```
