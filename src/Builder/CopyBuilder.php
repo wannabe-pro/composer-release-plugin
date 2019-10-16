@@ -1,16 +1,11 @@
 <?php
 
-namespace WannaBePro\Composer\Plugin\Release\Copy;
-
-use Traversable;
-use Throwable;
-use WannaBePro\Composer\Plugin\Release\Builder as BaseBuilder;
-use WannaBePro\Composer\Plugin\Release\Mapper\File;
+namespace WannaBePro\Composer\Plugin\Release\Builder;
 
 /**
  * Simple copy file builder.
  */
-class Builder extends BaseBuilder
+class CopyBuilder extends BaseBuilder
 {
     protected function getFrom($path, array $config)
     {

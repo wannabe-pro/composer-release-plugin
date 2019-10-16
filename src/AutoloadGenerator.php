@@ -52,8 +52,7 @@ class AutoloadGenerator extends BaseAutoloadGenerator
         $targetDir,
         $scanPsr0Packages = false,
         $suffix = ''
-    )
-    {
+    ) {
         $cwd = getcwd();
         chdir($this->path);
         parent::dump($config, $localRepo, $mainPackage, $installationManager, $targetDir, $scanPsr0Packages, $suffix);

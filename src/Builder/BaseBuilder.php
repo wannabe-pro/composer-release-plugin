@@ -1,18 +1,18 @@
 <?php
 
-namespace WannaBePro\Composer\Plugin\Release;
+namespace WannaBePro\Composer\Plugin\Release\Builder;
 
 use Composer\Composer;
 use Composer\Installer;
 use Composer\IO\IOInterface;
-use Traversable;
-use WannaBePro\Composer\Plugin\Release\Mapper\File;
+use Exception;
+use Throwable;
 use WannaBePro\Composer\Plugin\Release\Mapper\FileIterator;
 
 /**
  * The release builder.
  */
-abstract class Builder
+abstract class BaseBuilder
 {
     /**
      * @var string The build name.
@@ -60,11 +60,14 @@ abstract class Builder
      * @param bool $update The upgrade flag.
      *
      * @return void
+     *
+     * @throws Exception
      */
     public function build(FileIterator $files, $update = false)
     {
-        $this->getInstaller($update)->run();
         try {
+            $this->io->write("Build {$this->target}:");
+            $this->getInstaller($update)->run();
             foreach ($files as $file) {
                 $config = $file->getConfig();
                 $from = $this->getFrom($file->getFile(), $config);
