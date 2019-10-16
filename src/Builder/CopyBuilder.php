@@ -9,8 +9,7 @@ class CopyBuilder extends BaseBuilder
 {
     protected function getFrom($path, array $config)
     {
-        $stream = fopen($path, 'w', null, $this->getContext($config));
-
+        $stream = fopen($path, 'r', null, $this->getContext($config));
         if (array_key_exists('filters', $config)) {
             foreach ($config['filters'] as $filter) {
                 stream_filter_append($stream, $filter);
@@ -22,15 +21,11 @@ class CopyBuilder extends BaseBuilder
 
     protected function getTo($path, array $config)
     {
-        return fopen($path, 'w', null, $this->getContext($config));
+        return fopen($this->target . DIRECTORY_SEPARATOR . $path, 'w', null, $this->getContext($config));
     }
 
     protected function getContext(array $config)
     {
-        if (array_key_exists('context', $config)) {
-            return stream_context_create($config['context']);
-        }
-
-        return null;
+        return stream_context_create(array_key_exists('context', $config) ? $config['context'] : []);
     }
 }

@@ -71,7 +71,7 @@ abstract class BaseBuilder
             foreach ($files as $file) {
                 $config = $file->getConfig();
                 $from = $this->getFrom($file->getFile(), $config);
-                $to = $this->getTo($this->target . DIRECTORY_SEPARATOR . $file, $config);
+                $to = $this->getTo($file, $config);
                 stream_copy_to_stream($from, $to);
                 fclose($from);
                 fclose($to);

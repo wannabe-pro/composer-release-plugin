@@ -227,7 +227,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             new ArrayIterator(
                 array_map(
                     function ($pattern, $result) {
-                        return new Rule($pattern, $result);
+                        $config = [];
+                        if (is_array($result)) {
+                            list('result' => $result, 'config' => $config) = $result;
+                        }
+
+                        return new Rule($pattern, $result, $config);
                     },
                     array_keys($mapper),
                     array_values($mapper)

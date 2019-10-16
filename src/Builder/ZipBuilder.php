@@ -2,41 +2,32 @@
 
 namespace WannaBePro\Composer\Plugin\Release\Builder;
 
+use Composer\Util\Filesystem;
+use Exception;
+use WannaBePro\Composer\Plugin\Release\Mapper\FileIterator;
 use ZipArchive;
 
 class ZipBuilder extends CopyBuilder
 {
     /**
-     * Archive.
-     *
-     * @var ZipArchive
+     * @inheritDoc
      */
-    protected $archive;
-
-    /**
-     * Close archive.
-     */
-    public function __destruct()
+    public function build(FileIterator $files, $update = false)
     {
-        if (isset($this->archive)) {
-            $this->archive->close();
+        $this->io->write("Build {$this->target}");
+        (new Filesystem())->ensureDirectoryExists(dirname($this->target));
+        $zip = new ZipArchive();
+        $zip->open($this->target, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        foreach ($files as $file) {
+            $config = $file->getConfig();
+            $source = $file->getFile();
+            $from = $this->getFrom($source, $config);
+            $conent = fread($from, filesize($source));
+            fclose($from);
+            $path = $this->getZipPath($file);
+            $zip->addFromString($path, $conent);
         }
-    }
-
-    /**
-     * Get archive.
-     *
-     * @return ZipArchive
-     */
-    protected function getArchive()
-    {
-        if (empty($this->archive)) {
-            $this->archive = new ZipArchive();
-            $this->archive->open($this->target, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
-        }
-
-        return $this->archive;
+        $zip->close();
     }
 
     /**
@@ -44,10 +35,7 @@ class ZipBuilder extends CopyBuilder
      */
     protected function getTo($path, array $config)
     {
-        $archive = $this->getArchive();
-        $path = $this->getArchivePath($path);
-        $archive->addFile($path);
-        return $archive->getStream($path);
+        throw new Exception('Not suported');
     }
 
     /**
@@ -57,7 +45,7 @@ class ZipBuilder extends CopyBuilder
      *
      * @return string
      */
-    protected function getArchivePath($path)
+    protected function getZipPath($path)
     {
         return $this->remove('/', str_replace('\\', '/', $path));
     }
