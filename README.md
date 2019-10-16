@@ -22,16 +22,14 @@ After that action plugin map files in virtual patch and give it iterator for spe
             "ProductionBuildTargetName": {
                 "builder": "SpecificBuilderName",
                 "composer": "SpecificComposerPackage",
-                "mapper": "SpecificFilesMapRules",
-                "converter": "SpecificConverterName"
+                "mapper": "SpecificFilesMapRules"
             }
         },
         "build-plugin-dev": {
             "DevelopmentBuildTargetName": {
                 "builder": "SpecificBuilderName",
                 "composer": "SpecificComposerJson",
-                "mapper": "SpecificFilesMapRules",
-                "converter": "SpecificFilesConverterRules"
+                "mapper": "SpecificFilesMapRules"
             }
         }
     }
@@ -59,13 +57,20 @@ This rule file accept `TargetIterator` as  `$iterator` var.
 You may append iterator of new targets for builder as `$iterator->getInnerIterator()->append()`.
 Use `FiltredFile` as items for disable another filtration rules on this files.
 
-By default `converter` read file as-is. You may set rules like for mapper, but in value set converter config:
+Mapper rules allow config object to setup stream options.
 
 ```json
 {
-    "/\\.php$/": [
-      "convert.iconv.utf-8.cp1251"
-    ],
-    "/\\.gitkeep$/": "null"
+    "/^.*\\.php$/": {
+        "result": "/cp1251/$0",
+        "config": {
+            "context": {
+                "proxy": "tcp://squid.example.com:8000"
+            },
+            "filters": ["convert.iconv.utf-8.cp1251"]
+        }
+    }
 }
 ```
+
+Configuration of `context` and `filters` by default apply for build source stream.
