@@ -13,7 +13,10 @@ use Composer\IO\IOInterface;
 use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
 use Composer\Util\Filesystem;
-use WannaBePro\Composer\Plugin\Release\Copy\Builder as CopyBuilder;
+use Exception;
+use WannaBePro\Composer\Plugin\Release\Builder\BaseBuilder;
+use WannaBePro\Composer\Plugin\Release\Builder\CopyBuilder;
+use WannaBePro\Composer\Plugin\Release\Builder\ZipBuilder;
 use WannaBePro\Composer\Plugin\Release\Mapper\Mapper;
 use WannaBePro\Composer\Plugin\Release\Mapper\MapperIterator;
 use WannaBePro\Composer\Plugin\Release\Mapper\Rule;
@@ -65,6 +68,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     protected static $builders = [
         'copy' => CopyBuilder::class,
+        'zip' => ZipBuilder::class,
     ];
 
     /**
@@ -75,7 +79,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public static function addBuilder($name, $builder)
     {
-        if (class_exists($builder, true) && in_array(Builder::class, class_parents($builder))) {
+        if (class_exists($builder, true) && in_array(BaseBuilder::class, class_parents($builder))) {
             self::$builders[$name] = $builder;
         }
     }
@@ -119,6 +123,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      * Install/update command action handler.
      *
      * @param Event $event
+     *
+     * @throws Exception
      */
     public function onCmd(Event $event)
     {
@@ -221,7 +227,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             new ArrayIterator(
                 array_map(
                     function ($pattern, $result) {
-                        return new Rule($pattern, $result);
+                        $config = [];
+                        if (is_array($result)) {
+                            list('result' => $result, 'config' => $config) = $result;
+                        }
+
+                        return new Rule($pattern, $result, $config);
                     },
                     array_keys($mapper),
                     array_values($mapper)

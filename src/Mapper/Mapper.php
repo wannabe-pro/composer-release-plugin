@@ -6,9 +6,8 @@ use Composer\Composer;
 use IteratorAggregate;
 use RecursiveDirectoryIterator;
 use FilesystemIterator;
-use OuterIterator;
 use RecursiveIteratorIterator;
-use WannaBePro\Composer\Plugin\Release\Builder;
+use WannaBePro\Composer\Plugin\Release\Builder\BaseBuilder;
 
 /**
  * The release mapper.
@@ -16,7 +15,7 @@ use WannaBePro\Composer\Plugin\Release\Builder;
 class Mapper implements IteratorAggregate
 {
     /**
-     * @var Builder The release builder.
+     * @var BaseBuilder The release builder.
      */
     protected $builder;
 
@@ -33,11 +32,11 @@ class Mapper implements IteratorAggregate
     /**
      * Mapper constructor.
      *
-     * @param Builder $builder The release builder.
+     * @param BaseBuilder $builder The release builder.
      * @param RuleIterator $rules The mapper rules.
      * @param Composer $composer The composer instance.
      */
-    public function __construct(Builder $builder, RuleIterator $rules, Composer $composer)
+    public function __construct(BaseBuilder $builder, RuleIterator $rules, Composer $composer)
     {
         $this->builder = $builder;
         $this->rules = $rules;
@@ -47,7 +46,7 @@ class Mapper implements IteratorAggregate
     /**
      * Get release builder.
      *
-     * @return Builder
+     * @return BaseBuilder
      */
     public function getBuilder()
     {

@@ -25,7 +25,7 @@ class TargetIterator extends FileIterator
 
     public function accept()
     {
-        return parent::accept() && (parent::current() instanceof FiltredFile || $this->apply());
+        return parent::accept() && (parent::current() instanceof FilteredFile || $this->apply());
     }
 
     protected function apply()

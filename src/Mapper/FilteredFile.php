@@ -2,6 +2,6 @@
 
 namespace WannaBePro\Composer\Plugin\Release\Mapper;
 
-class FiltredFile extends File
+class FilteredFile extends File
 {
 }

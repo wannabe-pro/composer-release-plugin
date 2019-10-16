@@ -42,9 +42,9 @@ By default template name equivalent source and all files will be excluded if not
 
 ```json
 {
-    "/.*/": false,
     "/^README.md/": true,
-    "/(.*)\\.php$/": "$1.inc"
+    "/(.*)\\.php$/": "$1.inc",
+    "/(^|\\/)\\./": false
 }
 ```
 
@@ -56,3 +56,21 @@ Set mapper key as numeric value and napper value as source file name.
 This rule file accept `TargetIterator` as  `$iterator` var.
 You may append iterator of new targets for builder as `$iterator->getInnerIterator()->append()`.
 Use `FiltredFile` as items for disable another filtration rules on this files.
+
+Mapper rules allow config object to setup stream options.
+
+```json
+{
+    "/^.*\\.php$/": {
+        "result": "/cp1251/$0",
+        "config": {
+            "context": {
+                "proxy": "tcp://squid.example.com:8000"
+            },
+            "filters": ["convert.iconv.utf-8.cp1251"]
+        }
+    }
+}
+```
+
+Configuration of `context` and `filters` by default apply for build source stream.

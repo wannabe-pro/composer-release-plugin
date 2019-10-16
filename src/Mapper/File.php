@@ -23,15 +23,22 @@ class File
     protected $target;
 
     /**
+     * @var array The stream config.
+     */
+    protected $config;
+
+    /**
      * File constructor.
      *
      * @param string $file The source file real path.
      * @param string $source The source file relative path.
+     * @param array $config The stream config.
      */
-    public function __construct($file, $source)
+    public function __construct($file, $source, array $config = [])
     {
         $this->file = $file;
         $this->source = $source;
+        $this->config = $config;
     }
 
     /**
@@ -72,5 +79,25 @@ class File
     public function setTarget($target)
     {
         $this->target = $target;
+    }
+
+    /**
+     * Set stream config.
+     *
+     * @param array $config The stream config.
+     */
+    public function setConfig(array $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * Get stream config.
+     *
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 }
