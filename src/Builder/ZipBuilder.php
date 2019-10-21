@@ -2,7 +2,6 @@
 
 namespace WannaBePro\Composer\Plugin\Release\Builder;
 
-use Composer\Util\Filesystem;
 use Exception;
 use WannaBePro\Composer\Plugin\Release\Mapper\FileIterator;
 use ZipArchive;
@@ -14,20 +13,23 @@ class ZipBuilder extends CopyBuilder
      */
     public function build(FileIterator $files, $update = false)
     {
-        $this->io->write("Build {$this->target}");
-        (new Filesystem())->ensureDirectoryExists(dirname($this->target));
-        $zip = new ZipArchive();
-        $zip->open($this->target, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-        foreach ($files as $file) {
-            $config = $file->getConfig();
-            $source = $file->getFile();
-            $from = $this->getFrom($source, $config);
-            $conent = fread($from, filesize($source));
-            fclose($from);
-            $path = $this->getZipPath($file);
-            $zip->addFromString($path, $conent);
+        try {
+            $this->install($update);
+            $zip = new ZipArchive();
+            $zip->open($this->target, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+            foreach ($files as $file) {
+                $config = $file->getConfig();
+                $source = $file->getFile();
+                $from = $this->getFrom($source, $config);
+                $content = fread($from, filesize($source));
+                fclose($from);
+                $path = $this->getZipPath($file);
+                $zip->addFromString($path, $content);
+            }
+            $zip->close();
+        } catch (Exception $exception) {
+            $this->io->writeError($exception->getMessage());
         }
-        $zip->close();
     }
 
     /**

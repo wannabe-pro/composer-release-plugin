@@ -5,8 +5,8 @@ namespace WannaBePro\Composer\Plugin\Release\Builder;
 use Composer\Composer;
 use Composer\Installer;
 use Composer\IO\IOInterface;
+use Composer\Util\Filesystem;
 use Exception;
-use Throwable;
 use WannaBePro\Composer\Plugin\Release\Mapper\FileIterator;
 
 /**
@@ -60,14 +60,11 @@ abstract class BaseBuilder
      * @param bool $update The upgrade flag.
      *
      * @return void
-     *
-     * @throws Exception
      */
     public function build(FileIterator $files, $update = false)
     {
         try {
-            $this->io->write("Build {$this->target}:");
-            $this->getInstaller($update)->run();
+            $this->install($update);
             foreach ($files as $file) {
                 $config = $file->getConfig();
                 $from = $this->getFrom($file->getFile(), $config);
@@ -76,9 +73,23 @@ abstract class BaseBuilder
                 fclose($from);
                 fclose($to);
             }
-        } catch (Throwable $exception) {
+        } catch (Exception $exception) {
             $this->io->writeError($exception->getMessage());
         }
+    }
+
+    /**
+     * Install build vendor.
+     *
+     * @param bool $update The upgrade flag.
+     *
+     * @throws Exception
+     */
+    protected function install($update)
+    {
+        $this->io->write("Build {$this->target}:");
+        (new Filesystem())->ensureDirectoryExists(dirname($this->target));
+        $this->getInstaller($update)->run();
     }
 
     /**
