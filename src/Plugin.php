@@ -223,7 +223,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $composer->setLocker(new Locker(
             $this->io,
             new JsonFile($path . DIRECTORY_SEPARATOR . 'composer.lock'),
-            $composer->getRepositoryManager(),
             $composer->getInstallationManager(),
             JsonFile::encode(is_string($config) && is_file($config) ? (new JsonFile($config))->read() : $config)
         ));

@@ -7,7 +7,7 @@ use Composer\Config;
 use Composer\EventDispatcher\EventDispatcher;
 use Composer\Installer\InstallationManager;
 use Composer\IO\IOInterface;
-use Composer\Package\PackageInterface;
+use Composer\Package\RootPackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
 
 /**
@@ -38,7 +38,7 @@ class AutoloadGenerator extends BaseAutoloadGenerator
      *
      * @param Config $config The config.
      * @param InstalledRepositoryInterface $localRepo The local repository.
-     * @param PackageInterface $mainPackage The main package.
+     * @param RootPackageInterface $rootPackage The root package.
      * @param InstallationManager $installationManager The installation manager.
      * @param string $targetDir The target directory.
      * @param bool $scanPsr0Packages The scan PSR0 packages flag.
@@ -47,7 +47,7 @@ class AutoloadGenerator extends BaseAutoloadGenerator
     public function dump(
         Config $config,
         InstalledRepositoryInterface $localRepo,
-        PackageInterface $mainPackage,
+        RootPackageInterface $rootPackage,
         InstallationManager $installationManager,
         $targetDir,
         $scanPsr0Packages = false,
@@ -55,7 +55,7 @@ class AutoloadGenerator extends BaseAutoloadGenerator
     ) {
         $cwd = getcwd();
         chdir($this->path);
-        parent::dump($config, $localRepo, $mainPackage, $installationManager, $targetDir, $scanPsr0Packages, $suffix);
+        parent::dump($config, $localRepo, $rootPackage, $installationManager, $targetDir, $scanPsr0Packages, $suffix);
         chdir($cwd);
     }
 }
