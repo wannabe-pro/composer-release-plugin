@@ -37,7 +37,7 @@
         "composer-plugin-api": "^1.0"
     },
     "require-dev": {
-        "composer/composer": "1.0.*@dev",
+        "composer/composer": "*",
         "squizlabs/php_codesniffer": "^3"
     },
     "extra": {
